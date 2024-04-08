@@ -40,7 +40,7 @@ export default function Home({ products }: HomeProps) {
   )
 }
 
-// iguais para todos os usuários que forem acessar a página
+// getStaticProps -> deve ser utilizado quando as informações forem iguais para todos os usuários
 export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({
     expand: ['data.default_price']
@@ -51,7 +51,10 @@ export const getStaticProps: GetStaticProps = async () => {
     return {
       id: product.id,
       name: product.name,
-      price: price.unit_amount,
+      price: new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      }).format(price.unit_amount! / 100),
       imageUrl: product.images[0],
     }
   })
